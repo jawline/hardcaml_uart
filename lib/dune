@@ -1,5 +1,5 @@
 (library
- (name hardcaml_uart_controller)
+ (name hardcaml_uart)
  (libraries hardcaml core)
  (inline_tests)
  (preprocess

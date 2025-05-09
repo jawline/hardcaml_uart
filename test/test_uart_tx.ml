@@ -1,6 +1,6 @@
 open! Core
 open Hardcaml
-open Hardcaml_uart_controller
+open Hardcaml_uart
 open! Bits
 
 let test ~clock_frequency ~baud_rate ~include_parity_bit ~stop_bits ~switch_every ~input =
@@ -8,7 +8,7 @@ let test ~clock_frequency ~baud_rate ~include_parity_bit ~stop_bits ~switch_ever
     Uart_tx.Make (struct
       (* This should trigger a switch every other cycle. *)
       let config =
-        { Hardcaml_uart_controller.Config.clock_frequency
+        { Hardcaml_uart.Config.clock_frequency
         ; baud_rate
         ; include_parity_bit
         ; stop_bits
