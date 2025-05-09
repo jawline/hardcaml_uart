@@ -1,5 +1,6 @@
 (library
  (name hardcaml_uart)
+ (public_name hardcaml_uart)
  (libraries hardcaml core)
  (inline_tests)
  (preprocess
