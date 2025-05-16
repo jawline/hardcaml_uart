@@ -76,11 +76,11 @@ let test ~name ~clock_frequency ~baud_rate ~include_parity_bit ~stop_bits ~all_i
   let total_cycles = ref 0 in
   List.iter
     ~f:(fun input ->
-      inputs.data_in_valid := of_int ~width:1 1;
-      inputs.data_in := of_int ~width:8 input;
+      inputs.data_in_valid := vdd;
+      inputs.data_in := of_int_trunc ~width:8 input;
       Cyclesim.cycle sim;
       incr total_cycles;
-      inputs.data_in_valid := of_int ~width:1 0;
+      inputs.data_in_valid := gnd;
       let rec loop_until_finished acc n =
         if n = 0
         then List.rev acc
@@ -90,7 +90,7 @@ let test ~name ~clock_frequency ~baud_rate ~include_parity_bit ~stop_bits ~all_i
           let acc =
             if Bits.to_bool !(outputs.data_out_valid)
                || Bits.to_bool !(outputs.parity_error)
-            then Bits.to_int !(outputs.data_out) :: acc
+            then to_int_trunc !(outputs.data_out) :: acc
             else acc
           in
           loop_until_finished acc (n - 1))
