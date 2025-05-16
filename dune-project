@@ -18,6 +18,4 @@
  (synopsis "A hardcaml UART implementation")
  (description "A hardcaml UART implementation")
  (depends ocaml dune)
- (allow_empty)
 )
-

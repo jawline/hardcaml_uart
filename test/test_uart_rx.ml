@@ -9,13 +9,7 @@ let debug = true
 let test ~name ~clock_frequency ~baud_rate ~include_parity_bit ~stop_bits ~all_inputs =
   let module Config = struct
     (* This should trigger a switch every other cycle. *)
-    let config =
-      { Config.clock_frequency
-      ; baud_rate
-      ; include_parity_bit
-      ; stop_bits
-      }
-    ;;
+    let config = { Config.clock_frequency; baud_rate; include_parity_bit; stop_bits }
   end
   in
   let module Uart_tx = Uart_tx.Make (Config) in
