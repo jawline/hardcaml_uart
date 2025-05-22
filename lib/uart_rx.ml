@@ -1,8 +1,4 @@
-(** This implements an 8-bit UART receiver at a fixed baud rate given a
-    fixed input frequency. The functor specifies whether to expect and validate
-    a parity bit and a stop bit. *)
 open! Core
-
 open Hardcaml
 open Signal
 open Always
@@ -147,8 +143,8 @@ module Make (C : Config_intf.S) = struct
     }
   ;;
 
-  let hierarchical ~instance (scope : Scope.t) (input : Signal.t I.t) =
+  let hierarchical (scope : Scope.t) (input : Signal.t I.t) =
     let module H = Hierarchy.In_scope (I) (O) in
-    H.hierarchical ~scope ~name:"uart_rx" ~instance create input
+    H.hierarchical ~scope ~name:"uart_rx" create input
   ;;
 end

@@ -1,11 +1,4 @@
-(** This implements an 8-bit UART transmitter at a fixed baud rate given a
-    fixed input frequency.
-
-    Format: [start bit][data bits][parity bit][end bit(s)]
-
-    At other times the UART line is held high. *)
 open! Core
-
 open Hardcaml
 open Signal
 open Always
@@ -130,8 +123,8 @@ module Make (C : Config_intf.S) = struct
     }
   ;;
 
-  let hierarchical ~instance (scope : Scope.t) (input : Signal.t I.t) =
+  let hierarchical (scope : Scope.t) (input : Signal.t I.t) =
     let module H = Hierarchy.In_scope (I) (O) in
-    H.hierarchical ~scope ~name:"uart_tx" ~instance create input
+    H.hierarchical ~scope ~name:"uart_tx" create input
   ;;
 end
