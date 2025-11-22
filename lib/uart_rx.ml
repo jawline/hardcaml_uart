@@ -31,7 +31,7 @@ module Make (C : Config_intf.S) = struct
       | Waiting_for_data_bits
       | Waiting_for_parity_bit
       | Waiting_for_stop_bits
-    [@@deriving sexp, enumerate, compare]
+    [@@deriving sexp, enumerate, compare ~localize]
   end
 
   type 'a switches =
@@ -59,7 +59,7 @@ module Make (C : Config_intf.S) = struct
       |: pipeline ~n:1 reg_spec_no_clear uart_rx
     in
     let current_state = State_machine.create (module State) reg_spec in
-    let clear_switch_counters = Variable.wire ~default:gnd in
+    let clear_switch_counters = Variable.wire ~default:gnd () in
     assert (switching_frequency > 1);
     let { bit = full_bit; half = half_bit } =
       switch_cycle
@@ -88,8 +88,8 @@ module Make (C : Config_intf.S) = struct
       else vdd
     in
     ignore (current_state.current -- "current_state" : Signal.t);
-    let%hw_var data_out_valid = Variable.wire ~default:gnd in
-    let%hw_var parity_error = Variable.wire ~default:gnd in
+    let%hw_var data_out_valid = Variable.wire ~default:gnd () in
+    let%hw_var parity_error = Variable.wire ~default:gnd () in
     let%hw uart_rx_negative_edge = reg reg_spec_no_clear uart_rx &: ~:uart_rx in
     compile
       [ current_state.switch

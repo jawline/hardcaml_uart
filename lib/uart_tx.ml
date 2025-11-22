@@ -32,7 +32,7 @@ module Make (C : Config_intf.S) = struct
       | Waiting_for_data_bits
       | Waiting_for_parity_bit
       | Waiting_for_stop_bits
-    [@@deriving sexp, enumerate, compare]
+    [@@deriving sexp, enumerate, compare ~localize]
   end
 
   let switch_cycle spec =

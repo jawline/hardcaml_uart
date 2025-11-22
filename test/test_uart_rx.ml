@@ -67,14 +67,14 @@ let test ~name ~clock_frequency ~baud_rate ~include_parity_bit ~stop_bits ~all_i
       inputs.data_in_valid := vdd;
       inputs.data_in := of_int_trunc ~width:8 input;
       Cyclesim.cycle sim;
-      incr total_cycles;
+      Core.incr total_cycles;
       inputs.data_in_valid := gnd;
       let rec loop_until_finished acc n =
         if n = 0
         then List.rev acc
         else (
           Cyclesim.cycle sim;
-          incr total_cycles;
+          Core.incr total_cycles;
           let acc =
             if
               Bits.to_bool !(outputs.data_out_valid)
