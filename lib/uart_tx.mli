@@ -11,8 +11,7 @@ open Hardcaml
 module Make (_ : Config_intf.S) : sig
   module I : sig
     type 'a t =
-      { clock : 'a
-      ; clear : 'a
+      { clock : 'a Clocking.t
       ; data_in_valid : 'a
       ; data_in : 'a [@bits 8]
       }

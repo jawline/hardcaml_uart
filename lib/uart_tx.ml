@@ -8,8 +8,7 @@ module Make (C : Config_intf.S) = struct
 
   module I = struct
     type 'a t =
-      { clock : 'a
-      ; clear : 'a
+      { clock : 'a Clocking.t
       ; data_in_valid : 'a
       ; data_in : 'a [@bits 8]
       }
@@ -43,16 +42,17 @@ module Make (C : Config_intf.S) = struct
     ==:. switching_frequency - 1
   ;;
 
-  let create (scope : Scope.t) ({ I.clock; clear; data_in_valid; data_in } : _ I.t) =
+  let create (scope : Scope.t) ({ I.clock; data_in_valid; data_in } : _ I.t) =
     let ( -- ) = Scope.naming scope in
-    let reg_spec = Reg_spec.create ~clock ~clear () in
-    let reg_spec_no_clear = Reg_spec.create ~clock () in
+    let reg_spec = Clocking.to_spec clock in
+    let reg_spec_no_clear = Clocking.to_spec_no_clear clock in
     let current_state = State_machine.create (module State) reg_spec in
     let current_output_reg = Variable.reg ~width:1 ~clear_to:vdd reg_spec_no_clear in
     (* When we are transmitting we hold our output at the value stored in a
        register. *)
     let reg_spec_clear_on_reset_switch_cycle =
-      Reg_spec.create ~clock ~clear:(current_state.is Waiting_for_data_in) ()
+      Clocking.to_spec
+        { clock = clock.clock; clear = current_state.is Waiting_for_data_in }
     in
     let%hw switch_cycle = switch_cycle reg_spec_clear_on_reset_switch_cycle in
     let%hw_var data_to_write = Variable.reg ~width:(width data_in) reg_spec_no_clear in

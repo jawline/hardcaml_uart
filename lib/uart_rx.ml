@@ -8,8 +8,7 @@ module Make (C : Config_intf.S) = struct
 
   module I = struct
     type 'a t =
-      { clock : 'a
-      ; clear : 'a
+      { clock : 'a Clocking.t
       ; uart_rx : 'a
       }
     [@@deriving hardcaml ~rtlmangle:"$"]
@@ -49,10 +48,10 @@ module Make (C : Config_intf.S) = struct
     { bit = ctr ==:. frequency - 1; half = ctr ==:. (frequency / 2) - 1 }
   ;;
 
-  let create (scope : Scope.t) ({ I.clock; clear; uart_rx } : _ I.t) =
+  let create (scope : Scope.t) ({ I.clock; uart_rx } : _ I.t) =
     let ( -- ) = Scope.naming scope in
-    let reg_spec = Reg_spec.create ~clock ~clear () in
-    let reg_spec_no_clear = Reg_spec.create ~clock () in
+    let reg_spec = Clocking.to_spec clock in
+    let reg_spec_no_clear = Clocking.to_spec_no_clear clock in
     let uart_rx =
       pipeline ~n:3 reg_spec_no_clear uart_rx
       |: pipeline ~n:2 reg_spec_no_clear uart_rx
@@ -64,7 +63,7 @@ module Make (C : Config_intf.S) = struct
     let { bit = full_bit; half = half_bit } =
       switch_cycle
         ~frequency:switching_frequency
-        (Reg_spec.create ~clock ~clear:clear_switch_counters.value ())
+        (Clocking.to_spec { clock = clock.clock; clear = clear_switch_counters.value })
     in
     let%hw full_bit = full_bit in
     let%hw half_bit = half_bit in

@@ -8,8 +8,7 @@ open Hardcaml
 module Make (_ : Config_intf.S) : sig
   module I : sig
     type 'a t =
-      { clock : 'a
-      ; clear : 'a
+      { clock : 'a Clocking.t
       ; uart_rx : 'a
       }
     [@@deriving hardcaml]
