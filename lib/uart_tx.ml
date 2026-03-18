@@ -47,7 +47,9 @@ module Make (C : Config_intf.S) = struct
     let reg_spec = Clocking.to_spec clock in
     let reg_spec_no_clear = Clocking.to_spec_no_clear clock in
     let current_state = State_machine.create (module State) reg_spec in
-    let current_output_reg = Variable.reg ~width:1 ~clear_to:vdd reg_spec_no_clear in
+    let current_output_reg =
+      Variable.reg ~width:1 ~clear_to:vdd ~initialize_to:Bits.vdd reg_spec
+    in
     (* When we are transmitting we hold our output at the value stored in a
        register. *)
     let reg_spec_clear_on_reset_switch_cycle =
